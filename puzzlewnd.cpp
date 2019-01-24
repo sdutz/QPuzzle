@@ -1,10 +1,13 @@
 #include "puzzlewnd.h"
 #include "ui_puzzlewnd.h"
 #include <QKeyEvent>
+#include <QFileDialog>
+#include <QInputDialog>
 
 //---------------------------------------------------------------
 #define QPWIDTH  "QPWidth"
 #define QPHEIGHT "QPHeight"
+#define QPDIR    "QPDir"
 
 //---------------------------------------------------------------
 PuzzleWnd::PuzzleWnd( QWidget *parent /* = nullptr*/) : QMainWindow( parent), ui( new Ui::PuzzleWnd)
@@ -35,7 +38,21 @@ PuzzleWnd::~PuzzleWnd()
 void
 PuzzleWnd::start()
 {
-    m_pScene->doPuzzle( "/Users/sdutz/Pictures/04.jpg", 5) ;
+    QString szDir = m_set.value( QPDIR).toString() ;
+    QString szImg = QFileDialog::getOpenFileName( this, tr( "Select image"), szDir, tr("Images (*.png *.xpm *.jpg)")) ;
+    if ( szImg.isEmpty()) {
+        return ;
+    }
+    m_set.setValue( QPDIR, szImg.left( szImg.lastIndexOf( "/"))) ;
+
+    bool         bOk ;
+    QInputDialog cInput ;
+
+    cInput.setInputMode( QInputDialog::InputMode::IntInput) ;
+    int nDiv = cInput.getInt( this, tr("Choose divide"), "", 2, 2, 20, 1, &bOk) ;
+    if ( bOk) {
+        m_pScene->doPuzzle( szImg, nDiv) ;
+    }
 }
 
 //---------------------------------------------------------------
