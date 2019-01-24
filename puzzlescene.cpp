@@ -6,6 +6,7 @@
 //---------------------------------------------------------------
 puzzleScene::puzzleScene( QGraphicsView *parent /*= nullptr*/) : QGraphicsScene( parent)
 {
+    m_pFull   = nullptr ;
     m_pPrev   = nullptr ;
     m_pParent = parent ;
     setBackgroundBrush( Qt::black) ;
@@ -36,7 +37,48 @@ puzzleScene::mousePressEvent( QGraphicsSceneMouseEvent* pEvent)
         pItem->setPos( m_pPrev->pos()) ;
         m_pPrev->setPos( pos) ;
         m_pPrev = nullptr ;
+        if ( isSolved()) {
+            showSol( true) ;
+        }
     }
+}
+
+//---------------------------------------------------------------
+void
+puzzleScene::reset()
+{
+    clear() ;
+    m_vSol.clear() ;
+}
+
+//---------------------------------------------------------------
+bool
+puzzleScene::showSol( bool bShow)
+{
+    if ( m_pFull == nullptr) {
+        return false ;
+    }
+
+    for ( int n = 0 ;  n < m_vSol.count() ;  n ++) {
+        bShow ? m_vSol[n].pItem->hide() : m_vSol[n].pItem->show() ;
+    }
+
+    bShow ? m_pFull->show() : m_pFull->hide() ;
+
+    return true ;
+}
+
+//---------------------------------------------------------------
+bool
+puzzleScene::isSolved()
+{
+    for ( int n = 0 ;  n < m_vSol.count() ;  n ++) {
+        if ( m_vSol[n].pItem->pos() != m_vSol[n].ptPos) {
+            return false ;
+        }
+    }
+
+    return true ;
 }
 
 //---------------------------------------------------------------
@@ -46,14 +88,15 @@ puzzleScene::doPuzzle( const QString szFile, int nDiv)
     int nPos ;
     int nStX, nStY ;
     QPixmap pix ;
-    QVector<QPixmap> crops ;
     QVector<int> apos ;
     QVector<int> arand ;
-    QGraphicsPixmapItem* pITem ;
+    puzzleItem pItem ;
 
     if ( ! pix.load( szFile)) {
         return false ;
     }
+
+    reset() ;
 
     m_pFull = addPixmap( pix) ;
     m_pFull->hide() ;
@@ -61,25 +104,26 @@ puzzleScene::doPuzzle( const QString szFile, int nDiv)
     nStY = pix.height() / nDiv ;
     for ( int nX = 0 ;  nX < pix.width() ;  nX ++) {
         for ( int nY = 0 ;  nY < pix.height() ;  nY ++) {
-            crops.append( pix.copy( nX, nY, nStX, nStY)) ;
+            pItem.pItem = addPixmap( pix.copy( nX, nY, nStX, nStY)) ;
+            pItem.ptPos = QPoint( nX, nY) ;
+            m_vSol.append( pItem) ;
             nY += nStY ;
         }
         nX += nStX ;
     }
 
-    for ( int i = 0 ;  i < crops.count() ;  i ++) {
+    for ( int i = 0 ;  i < m_vSol.count() ;  i ++) {
         apos.append( i) ;
     }
 
-    for ( int i = 0 ;  i < crops.count() ;  i ++) {
+    for ( int i = 0 ;  i < m_vSol.count() ;  i ++) {
         arand.append( apos.takeAt( qrand() % (apos.count()))) ;
     }
 
     nPos = 0 ;
     for ( int nX = 0 ;  nX < pix.width() ;  nX ++) {
         for ( int nY = 0 ;  nY < pix.height() ;  nY ++) {
-            pITem = addPixmap( crops[arand[nPos ++]]) ;
-            pITem->setPos( nX, nY) ;
+            m_vSol[arand[nPos ++]].pItem->setPos( nX, nY) ;
             nY += nStY ;
         }
         nX += nStX ;

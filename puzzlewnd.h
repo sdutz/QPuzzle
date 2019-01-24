@@ -19,6 +19,7 @@ class PuzzleWnd : public QMainWindow
 
     private slots :
         void start() ;
+        void keyPressEvent( QKeyEvent* pEvent) ;
 
     private :
         Ui::PuzzleWnd *ui ;

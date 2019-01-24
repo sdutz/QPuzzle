@@ -1,6 +1,8 @@
 #include "puzzlewnd.h"
 #include "ui_puzzlewnd.h"
+#include <QKeyEvent>
 
+//---------------------------------------------------------------
 #define QPWIDTH  "QPWidth"
 #define QPHEIGHT "QPHeight"
 
@@ -29,12 +31,25 @@ PuzzleWnd::~PuzzleWnd()
     delete ui;
 }
 
-
 //---------------------------------------------------------------
 void
 PuzzleWnd::start()
 {
-    m_pScene->doPuzzle( "/Users/sdutz/Pictures/04.jpg", 2) ;
+    m_pScene->doPuzzle( "/Users/sdutz/Pictures/04.jpg", 5) ;
 }
 
+//---------------------------------------------------------------
+void
+PuzzleWnd::keyPressEvent( QKeyEvent* pEvent)
+{
+    if ( pEvent == nullptr) {
+        return ;
+    }
 
+    if ( pEvent->key() == Qt::Key_C) {
+        m_pScene->showSol( true) ;
+    }
+    else if ( pEvent->key() == Qt::Key_H) {
+        m_pScene->showSol( false) ;
+    }
+}
