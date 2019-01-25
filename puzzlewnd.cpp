@@ -20,9 +20,7 @@ PuzzleWnd::PuzzleWnd( QWidget *parent /* = nullptr*/) : QMainWindow( parent), ui
 
     resize( m_set.value( QPWIDTH, minimumWidth()).toInt(), m_set.value( QPHEIGHT, minimumHeight()).toInt()) ;
 
-    QAction* pAct = new QAction( "Start", this) ;
-    connect( pAct, &QAction::triggered, this, &PuzzleWnd::start) ;
-    ui->menuGame->addAction( pAct) ;
+    createActions() ;
 }
 
 //---------------------------------------------------------------
@@ -31,27 +29,66 @@ PuzzleWnd::~PuzzleWnd()
     m_set.setValue( QPWIDTH, width()) ;
     m_set.setValue( QPHEIGHT, height()) ;
 
+    delete m_pAdd ;
+    delete m_pNext ;
+    delete m_pStart ;
+
     delete ui;
+}
+
+//---------------------------------------------------------------
+void
+PuzzleWnd::createActions()
+{
+    m_pAdd = new QAction( tr( "Add"), this) ;
+    connect( m_pAdd, &QAction::triggered, this, &PuzzleWnd::add) ;
+    ui->menuGame->addAction( m_pAdd) ;
+
+    m_pStart = new QAction( tr( "Start"), this) ;
+    connect( m_pStart, &QAction::triggered, this, &PuzzleWnd::start) ;
+    ui->menuGame->addAction( m_pStart) ;
+
+    m_pNext = new QAction( tr( "Next"), this) ;
+    connect( m_pNext, &QAction::triggered, this, &PuzzleWnd::next) ;
+    ui->menuGame->addAction( m_pNext) ;
 }
 
 //---------------------------------------------------------------
 void
 PuzzleWnd::start()
 {
-    QString szDir = m_set.value( QPDIR).toString() ;
-    QString szImg = QFileDialog::getOpenFileName( this, tr( "Select image"), szDir, tr("Images (*.png *.xpm *.jpg)")) ;
-    if ( szImg.isEmpty()) {
-        return ;
-    }
-    m_set.setValue( QPDIR, szImg.left( szImg.lastIndexOf( "/"))) ;
-
     bool         bOk ;
     QInputDialog cInput ;
 
     cInput.setInputMode( QInputDialog::InputMode::IntInput) ;
     int nDiv = cInput.getInt( this, tr("Choose divide"), "", 2, 2, 20, 1, &bOk) ;
     if ( bOk) {
-        m_pScene->doPuzzle( szImg, nDiv) ;
+        m_pScene->start( nDiv) ;
+    }
+}
+
+//---------------------------------------------------------------
+void
+PuzzleWnd::next()
+{
+    m_pScene->next() ;
+}
+
+//---------------------------------------------------------------
+void
+PuzzleWnd::add()
+{
+    QString szDir = m_set.value( QPDIR).toString() ;
+    QStringList slImgs = QFileDialog::getOpenFileNames( this, tr( "Select images"),
+                                                        szDir, tr("Images (*.png *.xpm *.jpg)")) ;
+    if ( slImgs.isEmpty()) {
+        return ;
+    }
+
+    m_set.setValue( QPDIR, slImgs.first().left( slImgs.first().lastIndexOf( "/"))) ;
+
+    foreach ( QString szImg, slImgs) {
+        m_pScene->addImage( szImg) ;
     }
 }
 

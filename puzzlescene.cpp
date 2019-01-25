@@ -6,6 +6,7 @@
 //---------------------------------------------------------------
 puzzleScene::puzzleScene( QGraphicsView *parent /*= nullptr*/) : QGraphicsScene( parent)
 {
+    m_nDiv    = 0 ;
     m_pFull   = nullptr ;
     m_pPrev   = nullptr ;
     m_pParent = parent ;
@@ -41,6 +42,13 @@ puzzleScene::mousePressEvent( QGraphicsSceneMouseEvent* pEvent)
             showSol( true) ;
         }
     }
+}
+
+//---------------------------------------------------------------
+void
+puzzleScene::addImage( const QString& szImg)
+{
+    m_lsGallery.append( szImg) ;
 }
 
 //---------------------------------------------------------------
@@ -83,7 +91,33 @@ puzzleScene::isSolved()
 
 //---------------------------------------------------------------
 bool
-puzzleScene::doPuzzle( const QString szFile, int nDiv)
+puzzleScene::next()
+{
+    m_nDiv ++ ;
+
+    if ( m_lsGallery.isEmpty()) {
+        return false ;
+    }
+
+    return doPuzzle() ;
+}
+
+//---------------------------------------------------------------
+bool
+puzzleScene::start( int nDiv)
+{
+    if ( m_lsGallery.isEmpty()) {
+        return false ;
+    }
+
+    m_nDiv = nDiv ;
+
+    return doPuzzle() ;
+}
+
+//---------------------------------------------------------------
+bool
+puzzleScene::doPuzzle()
 {
     int nPos ;
     int nStX, nStY ;
@@ -92,7 +126,7 @@ puzzleScene::doPuzzle( const QString szFile, int nDiv)
     QVector<int> arand ;
     puzzleItem pItem ;
 
-    if ( ! pix.load( szFile)) {
+    if ( ! pix.load( m_lsGallery.takeFirst())) {
         return false ;
     }
 
@@ -100,8 +134,8 @@ puzzleScene::doPuzzle( const QString szFile, int nDiv)
 
     m_pFull = addPixmap( pix) ;
     m_pFull->hide() ;
-    nStX = pix.width() / nDiv ;
-    nStY = pix.height() / nDiv ;
+    nStX = pix.width() / m_nDiv ;
+    nStY = pix.height() / m_nDiv ;
     for ( int nX = 0 ;  nX < pix.width() ;  nX ++) {
         for ( int nY = 0 ;  nY < pix.height() ;  nY ++) {
             pItem.pItem = addPixmap( pix.copy( nX, nY, nStX, nStY)) ;

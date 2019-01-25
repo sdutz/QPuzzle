@@ -18,11 +18,19 @@ class PuzzleWnd : public QMainWindow
         ~PuzzleWnd() ;
 
     private slots :
+        void add() ;
+        void next() ;
         void start() ;
         void keyPressEvent( QKeyEvent* pEvent) ;
+
+    private :
+        void createActions() ;
 
     private :
         Ui::PuzzleWnd *ui ;
         puzzleScene* m_pScene ;
         QSettings    m_set ;
+        QAction*     m_pAdd ;
+        QAction*     m_pNext ;
+        QAction*     m_pStart ;
 } ;
