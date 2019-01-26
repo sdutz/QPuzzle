@@ -1,4 +1,5 @@
 #include "puzzlescene.h"
+#include "math.h"
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
@@ -6,7 +7,6 @@
 //---------------------------------------------------------------
 puzzleScene::puzzleScene( QGraphicsView *parent /*= nullptr*/) : QGraphicsScene( parent)
 {
-    m_nDiv    = 0 ;
     m_pFull   = nullptr ;
     m_pPrev   = nullptr ;
     m_pParent = parent ;
@@ -48,7 +48,11 @@ puzzleScene::mousePressEvent( QGraphicsSceneMouseEvent* pEvent)
 void
 puzzleScene::addImage( const QString& szImg)
 {
-    m_lsGallery.append( szImg) ;
+    puzzleLevel level ;
+
+    level.szImg = szImg ;
+
+    m_lLevels.append( level) ;
 }
 
 //---------------------------------------------------------------
@@ -93,31 +97,37 @@ puzzleScene::isSolved()
 bool
 puzzleScene::next()
 {
-    m_nDiv ++ ;
-
-    if ( m_lsGallery.isEmpty()) {
+    if ( m_lLevels.isEmpty()) {
         return false ;
     }
 
-    return doPuzzle() ;
+    puzzleLevel lev = m_lLevels.takeFirst() ;
+
+    return doPuzzle( lev.nDiv, lev.szImg) ;
 }
 
 //---------------------------------------------------------------
 bool
 puzzleScene::start( int nDiv)
 {
-    if ( m_lsGallery.isEmpty()) {
+    if ( m_lLevels.isEmpty()) {
         return false ;
     }
 
-    m_nDiv = nDiv ;
+    double dRatio ;
 
-    return doPuzzle() ;
+    dRatio = ( 6. - nDiv) / m_lLevels.count() ;
+
+    for ( int i = 0 ;  i < m_lLevels.count() ;  i ++) {
+        m_lLevels[ i].nDiv = int ( nDiv + dRatio * i) ;
+    }
+
+    return next() ;
 }
 
 //---------------------------------------------------------------
 bool
-puzzleScene::doPuzzle()
+puzzleScene::doPuzzle( int nDiv, const QString& szImg)
 {
     int nPos ;
     int nStX, nStY ;
@@ -126,7 +136,7 @@ puzzleScene::doPuzzle()
     QVector<int> arand ;
     puzzleItem pItem ;
 
-    if ( ! pix.load( m_lsGallery.takeFirst())) {
+    if ( ! pix.load( szImg)) {
         return false ;
     }
 
@@ -134,8 +144,8 @@ puzzleScene::doPuzzle()
 
     m_pFull = addPixmap( pix) ;
     m_pFull->hide() ;
-    nStX = pix.width() / m_nDiv ;
-    nStY = pix.height() / m_nDiv ;
+    nStX = pix.width() / nDiv ;
+    nStY = pix.height() / nDiv ;
     for ( int nX = 0 ;  nX < pix.width() ;  nX ++) {
         for ( int nY = 0 ;  nY < pix.height() ;  nY ++) {
             pItem.pItem = addPixmap( pix.copy( nX, nY, nStX, nStY)) ;

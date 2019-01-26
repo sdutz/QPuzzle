@@ -5,9 +5,9 @@
 #include <QInputDialog>
 
 //---------------------------------------------------------------
+#define QPDIR    "QPDir"
 #define QPWIDTH  "QPWidth"
 #define QPHEIGHT "QPHeight"
-#define QPDIR    "QPDir"
 
 //---------------------------------------------------------------
 PuzzleWnd::PuzzleWnd( QWidget *parent /* = nullptr*/) : QMainWindow( parent), ui( new Ui::PuzzleWnd)
@@ -26,7 +26,7 @@ PuzzleWnd::PuzzleWnd( QWidget *parent /* = nullptr*/) : QMainWindow( parent), ui
 //---------------------------------------------------------------
 PuzzleWnd::~PuzzleWnd()
 {
-    m_set.setValue( QPWIDTH, width()) ;
+    m_set.setValue( QPWIDTH,  width()) ;
     m_set.setValue( QPHEIGHT, height()) ;
 
     delete m_pAdd ;
@@ -90,6 +90,17 @@ PuzzleWnd::add()
     foreach ( QString szImg, slImgs) {
         m_pScene->addImage( szImg) ;
     }
+}
+
+//---------------------------------------------------------------
+void
+PuzzleWnd::resizeEvent( QResizeEvent* pEvent)
+{
+    if ( pEvent == nullptr) {
+        return ;
+    }
+
+    ui->pView->fitInView( m_pScene->itemsBoundingRect(), Qt::KeepAspectRatio) ;
 }
 
 //---------------------------------------------------------------

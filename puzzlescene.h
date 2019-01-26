@@ -3,6 +3,17 @@
 #include <QGraphicsScene>
 
 //---------------------------------------------------------------
+struct puzzleLevel {
+    int     nDiv ;
+    QString szImg ;
+
+    puzzleLevel() {
+        nDiv = 2 ;
+    }
+} ;
+
+
+//---------------------------------------------------------------
 struct puzzleItem {
     QPoint               ptPos ;
     QGraphicsPixmapItem* pItem ;
@@ -22,15 +33,14 @@ class puzzleScene : public QGraphicsScene
         void mousePressEvent( QGraphicsSceneMouseEvent* pEvent) ;
 
     private :
-        bool doPuzzle() ;
+        bool doPuzzle( int nDiv, const QString& szImg) ;
         bool isSolved() ;
         void reset() ;
 
     private :
-        int                  m_nDiv ;
         QGraphicsItem*       m_pPrev ;
         QGraphicsView*       m_pParent ;
         QGraphicsPixmapItem* m_pFull ;
         QVector<puzzleItem>  m_vSol ;
-        QStringList          m_lsGallery ;
+        QList<puzzleLevel>   m_lLevels ;
 } ;

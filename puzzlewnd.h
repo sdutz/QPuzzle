@@ -22,6 +22,7 @@ class PuzzleWnd : public QMainWindow
         void next() ;
         void start() ;
         void keyPressEvent( QKeyEvent* pEvent) ;
+        void resizeEvent( QResizeEvent* pEvent) ;
 
     private :
         void createActions() ;
