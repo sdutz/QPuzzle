@@ -3,6 +3,8 @@
 #include <QKeyEvent>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
 
 //---------------------------------------------------------------
 #define QPDIR    "QPDir"
@@ -21,6 +23,7 @@ PuzzleWnd::PuzzleWnd( QWidget *parent /* = nullptr*/) : QMainWindow( parent), ui
     resize( m_set.value( QPWIDTH, minimumWidth()).toInt(), m_set.value( QPHEIGHT, minimumHeight()).toInt()) ;
 
     createActions() ;
+    play() ;
 }
 
 //---------------------------------------------------------------
@@ -90,6 +93,8 @@ PuzzleWnd::add()
     foreach ( QString szImg, slImgs) {
         m_pScene->addImage( szImg) ;
     }
+
+    start() ;
 }
 
 //---------------------------------------------------------------
@@ -117,4 +122,16 @@ PuzzleWnd::keyPressEvent( QKeyEvent* pEvent)
     else if ( pEvent->key() == Qt::Key_H) {
         m_pScene->showSol( false) ;
     }
+}
+
+//---------------------------------------------------------------
+void
+PuzzleWnd::play()
+{
+    m_playlist = new QMediaPlaylist( &m_player) ;
+    m_playlist->addMedia( QUrl( "qrc:/music/song1.mp3")) ;
+    m_player.setPlaylist( m_playlist) ;
+    m_player.setVolume( 70) ;
+    m_playlist->setPlaybackMode( QMediaPlaylist::Loop) ;
+    m_player.play() ;
 }
