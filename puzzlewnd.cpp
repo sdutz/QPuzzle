@@ -35,7 +35,7 @@ PuzzleWnd::~PuzzleWnd()
     delete m_pAdd ;
     delete m_pNext ;
     delete m_pStart ;
-
+    delete m_playlist ;
     delete ui;
 }
 

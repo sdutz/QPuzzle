@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QTimer>
 #include <QGraphicsScene>
 
 //---------------------------------------------------------------
@@ -22,12 +23,17 @@ struct puzzleItem {
 //---------------------------------------------------------------
 class puzzleScene : public QGraphicsScene
 {
+    Q_OBJECT
+
     public :
         puzzleScene( QGraphicsView *parent = nullptr) ;
         bool start( int nDiv) ;
         bool next() ;
         bool showSol( bool bShow) ;
         void addImage( const QString& szImg) ;
+
+    public slots :
+        void swapPos() ;
 
     protected :
         void mousePressEvent( QGraphicsSceneMouseEvent* pEvent) ;
@@ -38,7 +44,11 @@ class puzzleScene : public QGraphicsScene
         void reset() ;
 
     private :
+        int                  m_nMove ;
+        QTimer*              m_pAnim ;
+        QPointF              m_pMove ;
         QGraphicsItem*       m_pPrev ;
+        QGraphicsItem*       m_pCurr ;
         QGraphicsView*       m_pParent ;
         QGraphicsPixmapItem* m_pFull ;
         QVector<puzzleItem>  m_vSol ;

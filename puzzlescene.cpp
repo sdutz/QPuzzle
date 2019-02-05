@@ -5,11 +5,17 @@
 #include <QGraphicsView>
 
 //---------------------------------------------------------------
+#define MAXMOVES 30
+
+//---------------------------------------------------------------
 puzzleScene::puzzleScene( QGraphicsView *parent /*= nullptr*/) : QGraphicsScene( parent)
 {
+    m_nMove   = 0 ;
     m_pFull   = nullptr ;
+    m_pCurr   = nullptr ;
     m_pPrev   = nullptr ;
     m_pParent = parent ;
+    m_pAnim   = new QTimer( this) ;
     setBackgroundBrush( Qt::black) ;
 }
 
@@ -34,13 +40,30 @@ puzzleScene::mousePressEvent( QGraphicsSceneMouseEvent* pEvent)
     }
     else if ( pItem != m_pPrev){
         m_pPrev->setOpacity( 1.) ;
-        QPointF pos = pItem->pos() ;
-        pItem->setPos( m_pPrev->pos()) ;
-        m_pPrev->setPos( pos) ;
+        m_pCurr  = pItem ;
+        m_pMove  = pItem->pos() - m_pPrev->pos() ;
+        m_pMove /= MAXMOVES ;
+        connect( m_pAnim, SIGNAL(timeout()), this, SLOT(swapPos())) ;
+        m_pAnim->start( 1) ;
+    }
+}
+
+//---------------------------------------------------------------
+void
+puzzleScene::swapPos()
+{
+    m_nMove ++ ;
+    m_pCurr->moveBy( - m_pMove.rx(), - m_pMove.ry()) ;
+    m_pPrev->moveBy( m_pMove.rx(), m_pMove.ry()) ;
+    if ( m_nMove == MAXMOVES) {
+        m_pAnim->stop() ;
+        m_nMove = 0 ;
         m_pPrev = nullptr ;
         if ( isSolved()) {
             showSol( true) ;
         }
+
+        disconnect( m_pAnim, SIGNAL(timeout()), nullptr, nullptr) ;
     }
 }
 
@@ -114,9 +137,8 @@ puzzleScene::start( int nDiv)
         return false ;
     }
 
-    double dRatio ;
-
-    dRatio = ( 6. - nDiv) / m_lLevels.count() ;
+    double maxLev = m_lLevels.count() > 4 ? 6 : 4 ;
+    double dRatio = ( maxLev - nDiv) / m_lLevels.count() ;
 
     for ( int i = 0 ;  i < m_lLevels.count() ;  i ++) {
         m_lLevels[ i].nDiv = int ( nDiv + dRatio * i) ;
