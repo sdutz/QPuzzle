@@ -5,12 +5,13 @@
 #include <QGraphicsView>
 
 //---------------------------------------------------------------
-#define MAXMOVES 30
+#define MAXMOVES 10
+#define MAXOPCH  10
 
 //---------------------------------------------------------------
 puzzleScene::puzzleScene( QGraphicsView *parent /*= nullptr*/) : QGraphicsScene( parent)
 {
-    m_nMove   = 0 ;
+    m_nStep   = 0 ;
     m_pFull   = nullptr ;
     m_pCurr   = nullptr ;
     m_pPrev   = nullptr ;
@@ -23,7 +24,7 @@ puzzleScene::puzzleScene( QGraphicsView *parent /*= nullptr*/) : QGraphicsScene(
 void
 puzzleScene::mousePressEvent( QGraphicsSceneMouseEvent* pEvent)
 {
-    if ( pEvent == nullptr) {
+    if ( pEvent == nullptr  ||  ( m_pFull != nullptr  &&  m_pFull->isVisible())  ||  m_nStep != 0) {
         return ;
     }
 
@@ -44,7 +45,11 @@ puzzleScene::mousePressEvent( QGraphicsSceneMouseEvent* pEvent)
         m_pMove  = pItem->pos() - m_pPrev->pos() ;
         m_pMove /= MAXMOVES ;
         connect( m_pAnim, SIGNAL(timeout()), this, SLOT(swapPos())) ;
-        m_pAnim->start( 1) ;
+        m_pAnim->start( 100) ;
+    }
+    else if ( m_pPrev == pItem) {
+        pItem->setOpacity( 1.) ;
+        m_pPrev = nullptr ;
     }
 }
 
@@ -52,18 +57,36 @@ puzzleScene::mousePressEvent( QGraphicsSceneMouseEvent* pEvent)
 void
 puzzleScene::swapPos()
 {
-    m_nMove ++ ;
+    m_nStep ++ ;
     m_pCurr->moveBy( - m_pMove.rx(), - m_pMove.ry()) ;
     m_pPrev->moveBy( m_pMove.rx(), m_pMove.ry()) ;
-    if ( m_nMove == MAXMOVES) {
+    if ( m_nStep == MAXMOVES) {
         m_pAnim->stop() ;
-        m_nMove = 0 ;
+        m_nStep = 0 ;
         m_pPrev = nullptr ;
-        if ( isSolved()) {
-            showSol( true) ;
-        }
-
         disconnect( m_pAnim, SIGNAL(timeout()), nullptr, nullptr) ;
+        if ( isSolved()) {
+            m_pFull->setOpacity( 0) ;
+            m_pFull->show() ;
+            connect( m_pAnim, SIGNAL(timeout()), this, SLOT(showSol())) ;
+            m_pAnim->start( 100) ;
+        }
+    }
+}
+
+//---------------------------------------------------------------
+void
+puzzleScene::showSol()
+{
+    m_nStep ++ ;
+    for ( int n = 0 ;  n < m_vSol.count() ;  n ++) {
+        m_vSol[n].pItem->setOpacity( m_vSol[n].pItem->opacity() - 0.1) ;
+    }
+    m_pFull->setOpacity( m_pFull->opacity() + 0.1) ;
+
+    if ( m_nStep == MAXOPCH) {
+        disconnect( m_pAnim, SIGNAL(timeout()), nullptr, nullptr) ;
+        m_nStep = 0 ;
     }
 }
 
@@ -124,9 +147,9 @@ puzzleScene::next()
         return false ;
     }
 
-    puzzleLevel lev = m_lLevels.takeFirst() ;
+    m_lev = m_lLevels.takeFirst() ;
 
-    return doPuzzle( lev.nDiv, lev.szImg) ;
+    return doPuzzle() ;
 }
 
 //---------------------------------------------------------------
@@ -149,7 +172,7 @@ puzzleScene::start( int nDiv)
 
 //---------------------------------------------------------------
 bool
-puzzleScene::doPuzzle( int nDiv, const QString& szImg)
+puzzleScene::doPuzzle()
 {
     int nPos ;
     int nStX, nStY ;
@@ -158,7 +181,7 @@ puzzleScene::doPuzzle( int nDiv, const QString& szImg)
     QVector<int> arand ;
     puzzleItem pItem ;
 
-    if ( ! pix.load( szImg)) {
+    if ( ! pix.load( m_lev.szImg)) {
         return false ;
     }
 
@@ -166,8 +189,8 @@ puzzleScene::doPuzzle( int nDiv, const QString& szImg)
 
     m_pFull = addPixmap( pix) ;
     m_pFull->hide() ;
-    nStX = pix.width() / nDiv ;
-    nStY = pix.height() / nDiv ;
+    nStX = pix.width() / m_lev.nDiv ;
+    nStY = pix.height() / m_lev.nDiv ;
     for ( int nX = 0 ;  nX < pix.width() ;  nX ++) {
         for ( int nY = 0 ;  nY < pix.height() ;  nY ++) {
             pItem.pItem = addPixmap( pix.copy( nX, nY, nStX, nStY)) ;

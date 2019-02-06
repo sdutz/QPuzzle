@@ -35,6 +35,7 @@ PuzzleWnd::~PuzzleWnd()
     delete m_pAdd ;
     delete m_pNext ;
     delete m_pStart ;
+    delete m_pReload ;
     delete m_playlist ;
     delete ui;
 }
@@ -54,6 +55,10 @@ PuzzleWnd::createActions()
     m_pNext = new QAction( tr( "Next"), this) ;
     connect( m_pNext, &QAction::triggered, this, &PuzzleWnd::next) ;
     ui->menuGame->addAction( m_pNext) ;
+
+    m_pReload = new QAction( tr( "Reload"), this) ;
+    connect( m_pReload, &QAction::triggered, this, &PuzzleWnd::reload) ;
+    ui->menuGame->addAction( m_pReload) ;
 }
 
 //---------------------------------------------------------------
@@ -75,6 +80,13 @@ void
 PuzzleWnd::next()
 {
     m_pScene->next() ;
+}
+
+//---------------------------------------------------------------
+void
+PuzzleWnd::reload()
+{
+    m_pScene->doPuzzle() ;
 }
 
 //---------------------------------------------------------------

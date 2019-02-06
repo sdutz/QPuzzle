@@ -29,22 +29,23 @@ class puzzleScene : public QGraphicsScene
         puzzleScene( QGraphicsView *parent = nullptr) ;
         bool start( int nDiv) ;
         bool next() ;
+        bool doPuzzle() ;
         bool showSol( bool bShow) ;
         void addImage( const QString& szImg) ;
 
     public slots :
         void swapPos() ;
+        void showSol() ;
 
     protected :
         void mousePressEvent( QGraphicsSceneMouseEvent* pEvent) ;
 
     private :
-        bool doPuzzle( int nDiv, const QString& szImg) ;
         bool isSolved() ;
         void reset() ;
 
     private :
-        int                  m_nMove ;
+        int                  m_nStep ;
         QTimer*              m_pAnim ;
         QPointF              m_pMove ;
         QGraphicsItem*       m_pPrev ;
@@ -52,5 +53,6 @@ class puzzleScene : public QGraphicsScene
         QGraphicsView*       m_pParent ;
         QGraphicsPixmapItem* m_pFull ;
         QVector<puzzleItem>  m_vSol ;
+        puzzleLevel          m_lev ;
         QList<puzzleLevel>   m_lLevels ;
 } ;

@@ -22,6 +22,7 @@ class PuzzleWnd : public QMainWindow
         void add() ;
         void next() ;
         void start() ;
+        void reload() ;
         void keyPressEvent( QKeyEvent* pEvent) ;
         void resizeEvent( QResizeEvent* pEvent) ;
 
@@ -38,4 +39,5 @@ class PuzzleWnd : public QMainWindow
         QAction*     m_pAdd ;
         QAction*     m_pNext ;
         QAction*     m_pStart ;
+        QAction*     m_pReload ;
 } ;
