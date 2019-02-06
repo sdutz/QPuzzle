@@ -21,6 +21,12 @@ puzzleScene::puzzleScene( QGraphicsView *parent /*= nullptr*/) : QGraphicsScene(
 }
 
 //---------------------------------------------------------------
+puzzleScene::~puzzleScene()
+{
+    delete m_pAnim ;
+}
+
+//---------------------------------------------------------------
 void
 puzzleScene::mousePressEvent( QGraphicsSceneMouseEvent* pEvent)
 {
@@ -85,6 +91,7 @@ puzzleScene::showSol()
     m_pFull->setOpacity( m_pFull->opacity() + 0.1) ;
 
     if ( m_nStep == MAXOPCH) {
+        m_pAnim->stop() ;
         disconnect( m_pAnim, SIGNAL(timeout()), nullptr, nullptr) ;
         m_nStep = 0 ;
     }
@@ -206,7 +213,7 @@ puzzleScene::doPuzzle()
     }
 
     for ( int i = 0 ;  i < m_vSol.count() ;  i ++) {
-        arand.append( apos.takeAt( qrand() % (apos.count()))) ;
+        arand.append( apos.takeAt( qrand() % ( apos.count()))) ;
     }
 
     nPos = 0 ;

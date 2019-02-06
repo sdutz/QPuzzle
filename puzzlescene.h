@@ -27,6 +27,8 @@ class puzzleScene : public QGraphicsScene
 
     public :
         puzzleScene( QGraphicsView *parent = nullptr) ;
+        ~puzzleScene() ;
+
         bool start( int nDiv) ;
         bool next() ;
         bool doPuzzle() ;
