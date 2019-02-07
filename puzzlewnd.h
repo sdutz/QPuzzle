@@ -21,6 +21,7 @@ class PuzzleWnd : public QMainWindow
     private slots :
         void add() ;
         void next() ;
+        void mute() ;
         void start() ;
         void reload() ;
         void keyPressEvent( QKeyEvent* pEvent) ;
@@ -37,6 +38,7 @@ class PuzzleWnd : public QMainWindow
         QMediaPlayer m_player ;
         QSettings    m_set ;
         QAction*     m_pAdd ;
+        QAction*     m_pMute ;
         QAction*     m_pNext ;
         QAction*     m_pStart ;
         QAction*     m_pReload ;

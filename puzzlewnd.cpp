@@ -34,6 +34,7 @@ PuzzleWnd::~PuzzleWnd()
 
     delete m_pAdd ;
     delete m_pNext ;
+    delete m_pMute ;
     delete m_pStart ;
     delete m_pReload ;
     delete m_playlist ;
@@ -59,6 +60,11 @@ PuzzleWnd::createActions()
     m_pReload = new QAction( tr( "Reload"), this) ;
     connect( m_pReload, &QAction::triggered, this, &PuzzleWnd::reload) ;
     ui->menuGame->addAction( m_pReload) ;
+
+    m_pMute = new QAction( tr( "Muted"), this) ;
+    connect( m_pMute, &QAction::triggered, this, &PuzzleWnd::mute) ;
+    ui->menuGame->addAction( m_pMute) ;
+    m_pMute->setCheckable( true) ;
 }
 
 //---------------------------------------------------------------
@@ -72,6 +78,18 @@ PuzzleWnd::start()
     int nDiv = cInput.getInt( this, tr("Choose divide"), "", 2, 2, 20, 1, &bOk) ;
     if ( bOk) {
         m_pScene->start( nDiv) ;
+    }
+}
+
+//---------------------------------------------------------------
+void
+PuzzleWnd::mute()
+{
+    if ( m_player.state() == QMediaPlayer::State::PausedState) {
+        m_player.play() ;
+    }
+    else {
+        m_player.pause() ;
     }
 }
 
