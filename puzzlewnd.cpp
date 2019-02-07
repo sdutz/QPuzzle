@@ -48,23 +48,28 @@ PuzzleWnd::createActions()
     m_pAdd = new QAction( tr( "Add"), this) ;
     connect( m_pAdd, &QAction::triggered, this, &PuzzleWnd::add) ;
     ui->menuGame->addAction( m_pAdd) ;
+    ui->mainToolBar->addAction( m_pAdd) ;
 
     m_pStart = new QAction( tr( "Start"), this) ;
     connect( m_pStart, &QAction::triggered, this, &PuzzleWnd::start) ;
     ui->menuGame->addAction( m_pStart) ;
+    ui->mainToolBar->addAction( m_pStart) ;
 
     m_pNext = new QAction( tr( "Next"), this) ;
     connect( m_pNext, &QAction::triggered, this, &PuzzleWnd::next) ;
     ui->menuGame->addAction( m_pNext) ;
+    ui->mainToolBar->addAction( m_pNext) ;
 
     m_pReload = new QAction( tr( "Reload"), this) ;
     connect( m_pReload, &QAction::triggered, this, &PuzzleWnd::reload) ;
     ui->menuGame->addAction( m_pReload) ;
+    ui->mainToolBar->addAction( m_pReload) ;
 
     m_pMute = new QAction( tr( "Muted"), this) ;
+    m_pMute->setCheckable( true) ;
     connect( m_pMute, &QAction::triggered, this, &PuzzleWnd::mute) ;
     ui->menuGame->addAction( m_pMute) ;
-    m_pMute->setCheckable( true) ;
+    ui->mainToolBar->addAction( m_pMute) ;
 }
 
 //---------------------------------------------------------------
