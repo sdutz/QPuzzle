@@ -31,6 +31,7 @@ class puzzleScene : public QGraphicsScene
 
         bool start( int nDiv) ;
         bool next() ;
+        bool about() ;
         bool doPuzzle() ;
         bool showSol( bool bShow) ;
         void addImage( const QString& szImg) ;
@@ -56,5 +57,7 @@ class puzzleScene : public QGraphicsScene
         QGraphicsPixmapItem* m_pFull ;
         QVector<puzzleItem>  m_vSol ;
         puzzleLevel          m_lev ;
+        puzzleLevel          m_prev ;
+        puzzleLevel          m_about ;
         QList<puzzleLevel>   m_lLevels ;
 } ;

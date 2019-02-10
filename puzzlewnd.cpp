@@ -36,6 +36,7 @@ PuzzleWnd::~PuzzleWnd()
     delete m_pNext ;
     delete m_pMute ;
     delete m_pStart ;
+    delete m_pAbout ;
     delete m_pReload ;
     delete m_playlist ;
     delete ui;
@@ -70,6 +71,11 @@ PuzzleWnd::createActions()
     connect( m_pMute, &QAction::triggered, this, &PuzzleWnd::mute) ;
     ui->menuGame->addAction( m_pMute) ;
     ui->mainToolBar->addAction( m_pMute) ;
+
+    m_pAbout = new QAction( tr( "About"), this) ;
+    connect( m_pAbout, &QAction::triggered, this, &PuzzleWnd::about) ;
+    ui->menuGame->addAction( m_pAbout) ;
+    ui->mainToolBar->addAction( m_pAbout) ;
 }
 
 //---------------------------------------------------------------
@@ -84,6 +90,13 @@ PuzzleWnd::start()
     if ( bOk) {
         m_pScene->start( nDiv) ;
     }
+}
+
+//---------------------------------------------------------------
+void
+PuzzleWnd::about()
+{
+    m_pScene->about() ;
 }
 
 //---------------------------------------------------------------
@@ -156,6 +169,21 @@ PuzzleWnd::keyPressEvent( QKeyEvent* pEvent)
     }
     else if ( pEvent->key() == Qt::Key_H) {
         m_pScene->showSol( false) ;
+    }
+    else if ( pEvent->key() == Qt::Key_M) {
+        mute() ;
+    }
+    else if ( pEvent->key() == Qt::Key_A) {
+        add() ;
+    }
+    else if ( pEvent->key() == Qt::Key_S) {
+        start() ;
+    }
+    else if ( pEvent->key() == Qt::Key_N) {
+        next() ;
+    }
+    else if ( pEvent->key() == Qt::Key_R) {
+        reload() ;
     }
 }
 

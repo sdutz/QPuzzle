@@ -18,6 +18,8 @@ puzzleScene::puzzleScene( QGraphicsView *parent /*= nullptr*/) : QGraphicsScene(
     m_pParent = parent ;
     m_pAnim   = new QTimer( this) ;
     setBackgroundBrush( Qt::black) ;
+    m_about.szImg = ":/images/about.jpg" ;
+    m_about.nDiv  = 4 ;
 }
 
 //---------------------------------------------------------------
@@ -150,6 +152,12 @@ puzzleScene::isSolved()
 bool
 puzzleScene::next()
 {
+    if ( ! m_prev.szImg.isEmpty()) {
+        m_lev = m_prev ;
+        m_prev.szImg.clear() ;
+        return doPuzzle() ;
+    }
+
     if ( m_lLevels.isEmpty()) {
         return false ;
     }
@@ -175,6 +183,19 @@ puzzleScene::start( int nDiv)
     }
 
     return next() ;
+}
+
+//---------------------------------------------------------------
+bool
+puzzleScene::about()
+{
+    if ( ! m_lev.szImg.isEmpty()) {
+        m_prev = m_lev ;
+    }
+
+    m_lev  = m_about ;
+
+    return doPuzzle() ;
 }
 
 //---------------------------------------------------------------
@@ -226,6 +247,7 @@ puzzleScene::doPuzzle()
     }
 
     m_pParent->fitInView( itemsBoundingRect(), Qt::KeepAspectRatio) ;
+    m_pParent->centerOn( itemsBoundingRect().center()) ;
 
     return true ;
 }
