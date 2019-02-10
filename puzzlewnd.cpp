@@ -35,6 +35,7 @@ PuzzleWnd::~PuzzleWnd()
     delete m_pAdd ;
     delete m_pNext ;
     delete m_pMute ;
+    delete m_pReset ;
     delete m_pStart ;
     delete m_pAbout ;
     delete m_pReload ;
@@ -46,6 +47,11 @@ PuzzleWnd::~PuzzleWnd()
 void
 PuzzleWnd::createActions()
 {
+    m_pReset = new QAction( tr( "New"), this) ;
+    connect( m_pReset, &QAction::triggered, this, &PuzzleWnd::reset) ;
+    ui->menuGame->addAction( m_pReset) ;
+    ui->mainToolBar->addAction( m_pReset) ;
+
     m_pAdd = new QAction( tr( "Add"), this) ;
     connect( m_pAdd, &QAction::triggered, this, &PuzzleWnd::add) ;
     ui->menuGame->addAction( m_pAdd) ;
@@ -90,6 +96,13 @@ PuzzleWnd::start()
     if ( bOk) {
         m_pScene->start( nDiv) ;
     }
+}
+
+//---------------------------------------------------------------
+void
+PuzzleWnd::reset()
+{
+    m_pScene->resetAll() ;
 }
 
 //---------------------------------------------------------------
@@ -141,8 +154,6 @@ PuzzleWnd::add()
     foreach ( QString szImg, slImgs) {
         m_pScene->addImage( szImg) ;
     }
-
-    start() ;
 }
 
 //---------------------------------------------------------------
@@ -153,7 +164,7 @@ PuzzleWnd::resizeEvent( QResizeEvent* pEvent)
         return ;
     }
 
-    ui->pView->fitInView( m_pScene->itemsBoundingRect(), Qt::KeepAspectRatio) ;
+    m_pScene->fit() ;
 }
 
 //---------------------------------------------------------------

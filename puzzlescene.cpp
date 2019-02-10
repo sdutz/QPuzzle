@@ -12,9 +12,7 @@
 puzzleScene::puzzleScene( QGraphicsView *parent /*= nullptr*/) : QGraphicsScene( parent)
 {
     m_nStep   = 0 ;
-    m_pFull   = nullptr ;
-    m_pCurr   = nullptr ;
-    m_pPrev   = nullptr ;
+    resetAll() ;
     m_pParent = parent ;
     m_pAnim   = new QTimer( this) ;
     setBackgroundBrush( Qt::black) ;
@@ -84,6 +82,18 @@ puzzleScene::swapPos()
 
 //---------------------------------------------------------------
 void
+puzzleScene::resetAll()
+{
+    m_lAdded.clear() ;
+    m_lLevels.clear() ;
+    clear() ;
+    m_pFull   = nullptr ;
+    m_pCurr   = nullptr ;
+    m_pPrev   = nullptr ;
+}
+
+//---------------------------------------------------------------
+void
 puzzleScene::showSol()
 {
     m_nStep ++ ;
@@ -97,6 +107,16 @@ puzzleScene::showSol()
         disconnect( m_pAnim, SIGNAL(timeout()), nullptr, nullptr) ;
         m_nStep = 0 ;
     }
+}
+
+//---------------------------------------------------------------
+void
+puzzleScene::fit()
+{
+    QRectF rect = itemsBoundingRect() ;
+
+    m_pParent->fitInView( rect, Qt::KeepAspectRatio) ;
+    m_pParent->centerOn( rect.center()) ;
 }
 
 //---------------------------------------------------------------
@@ -187,6 +207,7 @@ puzzleScene::start( int nDiv)
         m_lAdded[ i].nDiv = int ( nDiv + dRatio * i) ;
     }
 
+    m_lLevels.clear() ;
     m_lLevels.append( m_lAdded) ;
     m_lLevels.append( m_about) ;
 
@@ -254,8 +275,7 @@ puzzleScene::doPuzzle()
         nX += nStX ;
     }
 
-    m_pParent->fitInView( itemsBoundingRect(), Qt::KeepAspectRatio) ;
-    m_pParent->centerOn( itemsBoundingRect().center()) ;
+    fit() ;
 
     return true ;
 }

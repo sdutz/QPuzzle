@@ -31,6 +31,8 @@ class puzzleScene : public QGraphicsScene
 
         bool start( int nDiv) ;
         bool next() ;
+        void fit() ;
+        void resetAll() ;
         bool about() ;
         bool doPuzzle() ;
         bool showSol( bool bShow) ;
