@@ -61,16 +61,19 @@ PuzzleWnd::createActions()
     connect( m_pStart, &QAction::triggered, this, &PuzzleWnd::start) ;
     ui->menuGame->addAction( m_pStart) ;
     ui->mainToolBar->addAction( m_pStart) ;
+    m_pStart->setEnabled( false) ;
 
     m_pNext = new QAction( tr( "Next"), this) ;
     connect( m_pNext, &QAction::triggered, this, &PuzzleWnd::next) ;
     ui->menuGame->addAction( m_pNext) ;
     ui->mainToolBar->addAction( m_pNext) ;
+    m_pNext->setEnabled( false) ;
 
     m_pReload = new QAction( tr( "Reload"), this) ;
     connect( m_pReload, &QAction::triggered, this, &PuzzleWnd::reload) ;
     ui->menuGame->addAction( m_pReload) ;
     ui->mainToolBar->addAction( m_pReload) ;
+    m_pReload->setEnabled( false) ;
 
     m_pMute = new QAction( tr( "Muted"), this) ;
     m_pMute->setCheckable( true) ;
@@ -95,6 +98,8 @@ PuzzleWnd::start()
     int nDiv = cInput.getInt( this, tr("Choose divide"), "", 2, 2, 20, 1, &bOk) ;
     if ( bOk) {
         m_pScene->start( nDiv) ;
+        m_pNext->setEnabled( true) ;
+        m_pReload->setEnabled( true) ;
     }
 }
 
@@ -103,6 +108,9 @@ void
 PuzzleWnd::reset()
 {
     m_pScene->resetAll() ;
+    m_pStart->setEnabled( false) ;
+    m_pNext->setEnabled( false) ;
+    m_pReload->setEnabled( false) ;
 }
 
 //---------------------------------------------------------------
@@ -154,6 +162,8 @@ PuzzleWnd::add()
     foreach ( QString szImg, slImgs) {
         m_pScene->addImage( szImg) ;
     }
+
+    m_pStart->setEnabled( true) ;
 }
 
 //---------------------------------------------------------------

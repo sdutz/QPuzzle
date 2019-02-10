@@ -86,10 +86,11 @@ puzzleScene::resetAll()
 {
     m_lAdded.clear() ;
     m_lLevels.clear() ;
+    m_prev.szImg.clear() ;
     clear() ;
-    m_pFull   = nullptr ;
-    m_pCurr   = nullptr ;
-    m_pPrev   = nullptr ;
+    m_pFull = nullptr ;
+    m_pCurr = nullptr ;
+    m_pPrev = nullptr ;
 }
 
 //---------------------------------------------------------------
