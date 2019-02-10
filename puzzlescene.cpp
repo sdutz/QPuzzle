@@ -107,7 +107,7 @@ puzzleScene::addImage( const QString& szImg)
 
     level.szImg = szImg ;
 
-    m_lLevels.append( level) ;
+    m_lAdded.append( level) ;
 }
 
 //---------------------------------------------------------------
@@ -152,6 +152,10 @@ puzzleScene::isSolved()
 bool
 puzzleScene::next()
 {
+    if ( m_lAdded.isEmpty()) {
+        return false ;
+    }
+
     if ( ! m_prev.szImg.isEmpty()) {
         m_lev = m_prev ;
         m_prev.szImg.clear() ;
@@ -159,7 +163,8 @@ puzzleScene::next()
     }
 
     if ( m_lLevels.isEmpty()) {
-        return false ;
+        m_lLevels.append( m_lAdded) ;
+        m_lLevels.append( m_about) ;
     }
 
     m_lev = m_lLevels.takeFirst() ;
@@ -171,16 +176,19 @@ puzzleScene::next()
 bool
 puzzleScene::start( int nDiv)
 {
-    if ( m_lLevels.isEmpty()) {
+    if ( m_lAdded.isEmpty()) {
         return false ;
     }
 
-    double maxLev = m_lLevels.count() > 4 ? 6 : 4 ;
-    double dRatio = ( maxLev - nDiv) / m_lLevels.count() ;
+    double maxLev = m_lAdded.count() > 4 ? 6 : 4 ;
+    double dRatio = ( maxLev - nDiv) / m_lAdded.count() ;
 
-    for ( int i = 0 ;  i < m_lLevels.count() ;  i ++) {
-        m_lLevels[ i].nDiv = int ( nDiv + dRatio * i) ;
+    for ( int i = 0 ;  i < m_lAdded.count() ;  i ++) {
+        m_lAdded[ i].nDiv = int ( nDiv + dRatio * i) ;
     }
+
+    m_lLevels.append( m_lAdded) ;
+    m_lLevels.append( m_about) ;
 
     return next() ;
 }

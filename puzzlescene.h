@@ -59,5 +59,6 @@ class puzzleScene : public QGraphicsScene
         puzzleLevel          m_lev ;
         puzzleLevel          m_prev ;
         puzzleLevel          m_about ;
+        QList<puzzleLevel>   m_lAdded ;
         QList<puzzleLevel>   m_lLevels ;
 } ;
