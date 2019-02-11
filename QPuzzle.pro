@@ -44,4 +44,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     res.qrc
 
+win32:RC_ICONS += images/gallery.ico
+VERSION = 1.0
 ICON = images/gallery.icns
