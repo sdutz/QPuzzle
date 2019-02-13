@@ -19,9 +19,11 @@ PuzzleWnd::PuzzleWnd( QWidget *parent /* = nullptr*/) : QMainWindow( parent), ui
     m_pScene = new puzzleScene( ui->pView) ;
 
     ui->pView->setScene( m_pScene) ;
+    ui->pView->setParent( this) ;
 
     resize( m_set.value( QPWIDTH, minimumWidth()).toInt(), m_set.value( QPHEIGHT, minimumHeight()).toInt()) ;
 
+    setAcceptDrops( true) ;
     createActions() ;
     play() ;
 }
@@ -95,7 +97,7 @@ PuzzleWnd::start()
     QInputDialog cInput ;
 
     cInput.setInputMode( QInputDialog::InputMode::IntInput) ;
-    int nDiv = cInput.getInt( this, tr("Choose divide"), "", 2, 2, 20, 1, &bOk) ;
+    int nDiv = cInput.getInt( this, tr("Choose side pieces"), "", 2, 2, 20, 1, &bOk) ;
     if ( bOk) {
         m_pScene->start( nDiv) ;
         m_pNext->setEnabled( true) ;
@@ -144,6 +146,22 @@ void
 PuzzleWnd::reload()
 {
     m_pScene->doPuzzle() ;
+}
+
+//---------------------------------------------------------------
+void
+PuzzleWnd::addUrls( const QList<QUrl> urls)
+{
+    QUrl url ;
+
+    foreach( url, urls) {
+        if ( url.isLocalFile()) {
+            m_pScene->addImage( url.toLocalFile()) ;
+        }
+    }
+
+    m_set.setValue( QPDIR, url.toLocalFile().left( url.toLocalFile().lastIndexOf( "/"))) ;
+    m_pStart->setEnabled( true) ;
 }
 
 //---------------------------------------------------------------

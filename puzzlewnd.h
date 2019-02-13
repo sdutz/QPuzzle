@@ -18,6 +18,7 @@ class PuzzleWnd : public QMainWindow
     public :
         explicit PuzzleWnd( QWidget *parent = nullptr) ;
         ~PuzzleWnd() ;
+        void addUrls( const QList<QUrl> urls) ;
 
     private slots :
         void add() ;

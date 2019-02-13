@@ -27,11 +27,13 @@ CONFIG += c++11 app_bundle
 SOURCES += \
         main.cpp \
         puzzlewnd.cpp \
-    puzzlescene.cpp
+    puzzlescene.cpp \
+    puzzleview.cpp
 
 HEADERS += \
         puzzlewnd.h \
-    puzzlescene.h
+    puzzlescene.h \
+    puzzleview.h
 
 FORMS += \
         puzzlewnd.ui
