@@ -14,6 +14,7 @@
 puzzleScene::puzzleScene( QGraphicsView *parent /*= nullptr*/) : QGraphicsScene( parent)
 {
     m_nStep   = 0 ;
+    m_bMute   = false ;
     resetAll() ;
     m_pParent = parent ;
     m_pAnim   = new QTimer( this) ;
@@ -142,8 +143,10 @@ puzzleScene::addImage( const QString& szImg)
 void
 puzzleScene::play( bool bUp)
 {
-    m_sndPlaylist->setCurrentIndex( bUp ? 1 : 0) ;
-    m_sndPlayer.play() ;
+    if ( ! m_bMute) {
+        m_sndPlaylist->setCurrentIndex( bUp ? 1 : 0) ;
+        m_sndPlayer.play() ;
+    }
 }
 
 //---------------------------------------------------------------
@@ -296,7 +299,6 @@ puzzleScene::doPuzzle()
     return true ;
 }
 
-
 //---------------------------------------------------------------
 void
 puzzleScene::initSnd()
@@ -307,4 +309,11 @@ puzzleScene::initSnd()
     m_sndPlaylist->setPlaybackMode( QMediaPlaylist::PlaybackMode::CurrentItemOnce) ;
     m_sndPlayer.setPlaylist( m_sndPlaylist) ;
     m_sndPlayer.setVolume( 80) ;
+}
+
+//---------------------------------------------------------------
+void
+puzzleScene::toggleMute()
+{
+    m_bMute = ! m_bMute ;
 }

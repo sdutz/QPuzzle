@@ -37,6 +37,7 @@ class puzzleScene : public QGraphicsScene
         void resetAll() ;
         bool about() ;
         bool doPuzzle() ;
+        void toggleMute() ;
         bool showSol( bool bShow) ;
         void addImage( const QString& szImg) ;
 
@@ -54,6 +55,7 @@ class puzzleScene : public QGraphicsScene
         void play( bool bUp) ;
 
     private :
+        bool                 m_bMute ;
         int                  m_nStep ;
         QTimer*              m_pAnim ;
         QPointF              m_pMove ;

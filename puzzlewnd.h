@@ -24,7 +24,8 @@ class PuzzleWnd : public QMainWindow
     private slots :
         void add() ;
         void next() ;
-        void mute() ;
+        void ostMute() ;
+        void sndMute() ;
         void start() ;
         void reset() ;
         void about() ;
@@ -43,7 +44,8 @@ class PuzzleWnd : public QMainWindow
         QMediaPlayer m_ostPlayer ;
         QSettings    m_set ;
         QAction*     m_pAdd ;
-        QAction*     m_pMute ;
+        QAction*     m_pOstMute ;
+        QAction*     m_pSndMute ;
         QAction*     m_pNext ;
         QAction*     m_pReset ;
         QAction*     m_pAbout ;

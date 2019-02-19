@@ -35,11 +35,12 @@ PuzzleWnd::~PuzzleWnd()
 
     SAFE_DEL( m_pAdd) ;
     SAFE_DEL( m_pNext) ;
-    SAFE_DEL( m_pMute) ;
     SAFE_DEL( m_pReset) ;
     SAFE_DEL( m_pStart) ;
     SAFE_DEL( m_pAbout) ;
     SAFE_DEL( m_pReload) ;
+    SAFE_DEL( m_pOstMute) ;
+    SAFE_DEL( m_pSndMute) ;
     SAFE_DEL( m_ostPlaylist) ;
     SAFE_DEL( ui) ;
 }
@@ -76,11 +77,19 @@ PuzzleWnd::createActions()
     ui->mainToolBar->addAction( m_pReload) ;
     m_pReload->setEnabled( false) ;
 
-    m_pMute = new QAction( tr( "Muted"), this) ;
-    m_pMute->setCheckable( true) ;
-    connect( m_pMute, &QAction::triggered, this, &PuzzleWnd::mute) ;
-    ui->menuGame->addAction( m_pMute) ;
-    ui->mainToolBar->addAction( m_pMute) ;
+    m_pOstMute = new QAction( tr( "Music"), this) ;
+    m_pOstMute->setCheckable( true) ;
+    m_pOstMute->setChecked( true) ;
+    connect( m_pOstMute, &QAction::triggered, this, &PuzzleWnd::ostMute) ;
+    ui->menuGame->addAction( m_pOstMute) ;
+    ui->mainToolBar->addAction( m_pOstMute) ;
+
+    m_pSndMute = new QAction( tr( "Sounds"), this) ;
+    m_pSndMute->setCheckable( true) ;
+    m_pSndMute->setChecked( true) ;
+    connect( m_pSndMute, &QAction::triggered, this, &PuzzleWnd::sndMute) ;
+    ui->menuGame->addAction( m_pSndMute) ;
+    ui->mainToolBar->addAction( m_pSndMute) ;
 
     m_pAbout = new QAction( tr( "About"), this) ;
     connect( m_pAbout, &QAction::triggered, this, &PuzzleWnd::about) ;
@@ -123,7 +132,14 @@ PuzzleWnd::about()
 
 //---------------------------------------------------------------
 void
-PuzzleWnd::mute()
+PuzzleWnd::sndMute()
+{
+    m_pScene->toggleMute() ;
+}
+
+//---------------------------------------------------------------
+void
+PuzzleWnd::ostMute()
 {
     if ( m_ostPlayer.state() == QMediaPlayer::State::PausedState) {
         m_ostPlayer.play() ;
@@ -209,7 +225,8 @@ PuzzleWnd::keyPressEvent( QKeyEvent* pEvent)
         m_pScene->showSol( false) ;
     }
     else if ( pEvent->key() == Qt::Key_M) {
-        mute() ;
+        m_pOstMute->trigger() ;
+        m_pSndMute->trigger() ;
     }
     else if ( pEvent->key() == Qt::Key_A) {
         add() ;
