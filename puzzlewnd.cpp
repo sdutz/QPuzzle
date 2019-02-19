@@ -9,6 +9,8 @@
 #define QPDIR    "QPDir"
 #define QPWIDTH  "QPWidth"
 #define QPHEIGHT "QPHeight"
+#define QOSTMUTE "QOstMute"
+#define QSNDMUTE "QSndMute"
 
 //---------------------------------------------------------------
 PuzzleWnd::PuzzleWnd( QWidget *parent /* = nullptr*/) : QMainWindow( parent), ui( new Ui::PuzzleWnd)
@@ -25,6 +27,14 @@ PuzzleWnd::PuzzleWnd( QWidget *parent /* = nullptr*/) : QMainWindow( parent), ui
     setAcceptDrops( true) ;
     createActions() ;
     play() ;
+
+    if ( m_set.value( QOSTMUTE, false).toBool()) {
+        m_pOstMute->trigger() ;
+    }
+    if ( m_set.value( QSNDMUTE, false).toBool()) {
+        m_pSndMute->trigger() ;
+    }
+
 }
 
 //---------------------------------------------------------------
@@ -32,6 +42,8 @@ PuzzleWnd::~PuzzleWnd()
 {
     m_set.setValue( QPWIDTH,  width()) ;
     m_set.setValue( QPHEIGHT, height()) ;
+    m_set.setValue( QSNDMUTE, ! m_pSndMute->isChecked()) ;
+    m_set.setValue( QOSTMUTE, ! m_pOstMute->isChecked()) ;
 
     SAFE_DEL( m_pAdd) ;
     SAFE_DEL( m_pNext) ;
