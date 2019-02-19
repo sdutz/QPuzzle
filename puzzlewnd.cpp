@@ -231,6 +231,9 @@ PuzzleWnd::play()
 {
     m_ostPlaylist = new QMediaPlaylist( &m_ostPlayer) ;
     m_ostPlaylist->addMedia( QUrl( "qrc:/music/song1.mp3")) ;
+    m_ostPlaylist->addMedia( QUrl( "qrc:/music/song2.mp3")) ;
+    m_ostPlaylist->addMedia( QUrl( "qrc:/music/song3.mp3")) ;
+    m_ostPlaylist->addMedia( QUrl( "qrc:/music/song4.mp3")) ;
     m_ostPlayer.setPlaylist( m_ostPlaylist) ;
     m_ostPlayer.setVolume( 70) ;
     m_ostPlaylist->setPlaybackMode( QMediaPlaylist::Loop) ;
