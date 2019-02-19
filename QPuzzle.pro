@@ -33,7 +33,8 @@ SOURCES += \
 HEADERS += \
         puzzlewnd.h \
     puzzlescene.h \
-    puzzleview.h
+    puzzleview.h \
+    aux.h
 
 FORMS += \
         puzzlewnd.ui

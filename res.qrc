@@ -3,5 +3,7 @@
         <file>music/song1.mp3</file>
         <file>images/about.jpg</file>
         <file>images/gallery.png</file>
+        <file>music/sound1.mp3</file>
+        <file>music/sound2.mp3</file>
     </qresource>
 </RCC>

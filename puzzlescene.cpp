@@ -1,8 +1,10 @@
 #include "puzzlescene.h"
 #include "math.h"
+#include "aux.h"
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
+
 
 //---------------------------------------------------------------
 #define MAXMOVES 10
@@ -18,12 +20,14 @@ puzzleScene::puzzleScene( QGraphicsView *parent /*= nullptr*/) : QGraphicsScene(
     setBackgroundBrush( Qt::black) ;
     m_about.szImg = ":/images/about.jpg" ;
     m_about.nDiv  = 4 ;
+    initSnd() ;
 }
 
 //---------------------------------------------------------------
 puzzleScene::~puzzleScene()
 {
-    delete m_pAnim ;
+    SAFE_DEL( m_pAnim) ;
+    SAFE_DEL( m_sndPlaylist) ;
 }
 
 //---------------------------------------------------------------
@@ -44,6 +48,7 @@ puzzleScene::mousePressEvent( QGraphicsSceneMouseEvent* pEvent)
     if ( m_pPrev == nullptr) {
         m_pPrev = pItem ;
         pItem->setOpacity( 0.5) ;
+        play( false) ;
     }
     else if ( pItem != m_pPrev){
         m_pPrev->setOpacity( 1.) ;
@@ -56,6 +61,7 @@ puzzleScene::mousePressEvent( QGraphicsSceneMouseEvent* pEvent)
     else if ( m_pPrev == pItem) {
         pItem->setOpacity( 1.) ;
         m_pPrev = nullptr ;
+        play( true) ;
     }
 }
 
@@ -70,6 +76,7 @@ puzzleScene::swapPos()
         m_pAnim->stop() ;
         m_nStep = 0 ;
         m_pPrev = nullptr ;
+        play( true) ;
         disconnect( m_pAnim, SIGNAL(timeout()), nullptr, nullptr) ;
         if ( isSolved()) {
             m_pFull->setOpacity( 0) ;
@@ -129,6 +136,14 @@ puzzleScene::addImage( const QString& szImg)
     level.szImg = szImg ;
 
     m_lAdded.append( level) ;
+}
+
+//---------------------------------------------------------------
+void
+puzzleScene::play( bool bUp)
+{
+    m_sndPlaylist->setCurrentIndex( bUp ? 1 : 0) ;
+    m_sndPlayer.play() ;
 }
 
 //---------------------------------------------------------------
@@ -279,4 +294,17 @@ puzzleScene::doPuzzle()
     fit() ;
 
     return true ;
+}
+
+
+//---------------------------------------------------------------
+void
+puzzleScene::initSnd()
+{
+    m_sndPlaylist = new QMediaPlaylist( &m_sndPlayer) ;
+    m_sndPlaylist->addMedia( QUrl( "qrc:/music/sound1.mp3")) ;
+    m_sndPlaylist->addMedia( QUrl( "qrc:/music/sound2.mp3")) ;
+    m_sndPlaylist->setPlaybackMode( QMediaPlaylist::PlaybackMode::CurrentItemOnce) ;
+    m_sndPlayer.setPlaylist( m_sndPlaylist) ;
+    m_sndPlayer.setVolume( 80) ;
 }

@@ -1,10 +1,9 @@
 #include "puzzlewnd.h"
 #include "ui_puzzlewnd.h"
+#include "aux.h"
 #include <QKeyEvent>
 #include <QFileDialog>
 #include <QInputDialog>
-#include <QMediaPlayer>
-#include <QMediaPlaylist>
 
 //---------------------------------------------------------------
 #define QPDIR    "QPDir"
@@ -34,15 +33,15 @@ PuzzleWnd::~PuzzleWnd()
     m_set.setValue( QPWIDTH,  width()) ;
     m_set.setValue( QPHEIGHT, height()) ;
 
-    delete m_pAdd ;
-    delete m_pNext ;
-    delete m_pMute ;
-    delete m_pReset ;
-    delete m_pStart ;
-    delete m_pAbout ;
-    delete m_pReload ;
-    delete m_playlist ;
-    delete ui;
+    SAFE_DEL( m_pAdd) ;
+    SAFE_DEL( m_pNext) ;
+    SAFE_DEL( m_pMute) ;
+    SAFE_DEL( m_pReset) ;
+    SAFE_DEL( m_pStart) ;
+    SAFE_DEL( m_pAbout) ;
+    SAFE_DEL( m_pReload) ;
+    SAFE_DEL( m_ostPlaylist) ;
+    SAFE_DEL( ui) ;
 }
 
 //---------------------------------------------------------------
@@ -126,11 +125,11 @@ PuzzleWnd::about()
 void
 PuzzleWnd::mute()
 {
-    if ( m_player.state() == QMediaPlayer::State::PausedState) {
-        m_player.play() ;
+    if ( m_ostPlayer.state() == QMediaPlayer::State::PausedState) {
+        m_ostPlayer.play() ;
     }
     else {
-        m_player.pause() ;
+        m_ostPlayer.pause() ;
     }
 }
 
@@ -230,10 +229,10 @@ PuzzleWnd::keyPressEvent( QKeyEvent* pEvent)
 void
 PuzzleWnd::play()
 {
-    m_playlist = new QMediaPlaylist( &m_player) ;
-    m_playlist->addMedia( QUrl( "qrc:/music/song1.mp3")) ;
-    m_player.setPlaylist( m_playlist) ;
-    m_player.setVolume( 70) ;
-    m_playlist->setPlaybackMode( QMediaPlaylist::Loop) ;
-    m_player.play() ;
+    m_ostPlaylist = new QMediaPlaylist( &m_ostPlayer) ;
+    m_ostPlaylist->addMedia( QUrl( "qrc:/music/song1.mp3")) ;
+    m_ostPlayer.setPlaylist( m_ostPlaylist) ;
+    m_ostPlayer.setVolume( 70) ;
+    m_ostPlaylist->setPlaybackMode( QMediaPlaylist::Loop) ;
+    m_ostPlayer.play() ;
 }

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QTimer>
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
 #include <QGraphicsScene>
 
 //---------------------------------------------------------------
@@ -48,6 +50,8 @@ class puzzleScene : public QGraphicsScene
     private :
         bool isSolved() ;
         void reset() ;
+        void initSnd() ;
+        void play( bool bUp) ;
 
     private :
         int                  m_nStep ;
@@ -63,4 +67,6 @@ class puzzleScene : public QGraphicsScene
         puzzleLevel          m_about ;
         QList<puzzleLevel>   m_lAdded ;
         QList<puzzleLevel>   m_lLevels ;
+        QMediaPlaylist*      m_sndPlaylist ;
+        QMediaPlayer         m_sndPlayer ;
 } ;

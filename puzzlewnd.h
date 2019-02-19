@@ -4,6 +4,7 @@
 #include <QSettings>
 #include "puzzlescene.h"
 #include <QMediaPlayer>
+#include <QMediaPlaylist>
 
 //---------------------------------------------------------------
 namespace Ui {
@@ -38,8 +39,8 @@ class PuzzleWnd : public QMainWindow
     private :
         Ui::PuzzleWnd *ui ;
         puzzleScene* m_pScene ;
-        QMediaPlaylist* m_playlist ;
-        QMediaPlayer m_player ;
+        QMediaPlaylist* m_ostPlaylist ;
+        QMediaPlayer m_ostPlayer ;
         QSettings    m_set ;
         QAction*     m_pAdd ;
         QAction*     m_pMute ;
